@@ -8,7 +8,7 @@ import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import EventIcon from '@mui/icons-material/Event';
 import CalendarViewDayIcon from '@mui/icons-material/CalendarViewDay';
 import { db } from './firebase';
-import { collection, onSnapshot, addDoc, serverTimestamp } from '@firebase/firestore'
+import { collection, onSnapshot, addDoc, serverTimestamp, query, orderBy } from '@firebase/firestore'
 
 function Feed() {
   const [input, setInput] = useState('');
@@ -16,7 +16,10 @@ function Feed() {
   const colRef = collection(db, 'posts');
 
   useEffect(() => {
-    onSnapshot(colRef, (snapshot) => {
+    // queries
+    const q = query(colRef, orderBy('timestamp', 'desc'))
+
+    onSnapshot(q, (snapshot) => {
       setPosts(
         snapshot.docs.map(doc => ({
           id: doc.id,
@@ -36,6 +39,8 @@ function Feed() {
       photoUrl: '',
       timestamp: serverTimestamp(),
     });
+
+    setInput("");
   };
 
   return (
