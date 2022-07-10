@@ -9,8 +9,11 @@ import EventIcon from '@mui/icons-material/Event';
 import CalendarViewDayIcon from '@mui/icons-material/CalendarViewDay';
 import { db } from './firebase';
 import { collection, onSnapshot, addDoc, serverTimestamp, query, orderBy } from '@firebase/firestore'
+import { useSelector } from 'react-redux';
+import { selectUser } from './features/userSlice';
 
 function Feed() {
+  const user = useSelector(selectUser);
   const [input, setInput] = useState('');
   const [posts, setPosts] = useState([]);
   const colRef = collection(db, 'posts');
@@ -33,10 +36,10 @@ function Feed() {
     e.preventDefault();
 
     addDoc(colRef, {
-      name: 'Tan Wei Yan',
-      description: 'This is another test',
+      name: user.displayName,
+      description: user.email,
       message: input,
-      photoUrl: '',
+      photoUrl: user.photoURL,
       timestamp: serverTimestamp(),
     });
 
